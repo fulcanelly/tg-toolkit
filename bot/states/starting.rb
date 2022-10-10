@@ -10,7 +10,6 @@ class BaseMoscalState < BaseState
 end
 
 
-#TODO: town state 
 
 
 #TODO: add remove kb on next say() call option
@@ -31,7 +30,6 @@ class RespawnState < BaseState
     end
 
 end
-#TODO: home instead of main menu
 
 
 #TODO: implement stats showing state
@@ -79,7 +77,7 @@ end
 
 class MainMenuState < BaseState 
     def run 
-        suggest_it("Головне меню")
+        suggest_it("Ваш москаль лежить дома")
             .option("Показати статистку") do 
             
             end
@@ -87,7 +85,7 @@ class MainMenuState < BaseState
             
             end
             .option("Прогулятись") do 
-            
+                
             end
             .option("Померти") do 
                 switch_state SuicideState.new 

@@ -34,10 +34,9 @@ class BaseState
     attr_accessor :executor
     
 
-
     #print message to user
-    def say(text, **data)
-        executor.say(text, **data)
+    def say(text, kb: [], **data)
+        executor.say(text, **{kb:, **data})
     end
 
     #blocks until user enters something 

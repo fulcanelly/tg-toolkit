@@ -4,6 +4,7 @@
 
 MAX_RUN = 10
 
+
 class Context 
     attr_accessor :fiber, :state, :extra 
 

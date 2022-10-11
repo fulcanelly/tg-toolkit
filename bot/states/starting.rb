@@ -39,10 +39,12 @@ class StatsShowingState < BaseState
     
     def run 
         say(
-            "Карма вашого москаля #{}\n" + 
-            "Вік вашого москаля: #{}\n" +
-            "Ваш москаль помер  #{}\n" 
+            "Карма вашого москаля #{3}\n" + 
+            "Вік вашого москаля: #{2}\n" +
+            "Ваш москаль помер  #{1}\n" 
         )
+
+        switch_state MainMenuState.new 
     end
 
 end
@@ -73,19 +75,41 @@ class SuicideState < BaseState
         switch_state RespawnState.new
     end
 
+end 
+
+
+class WalkingInTownState < BaseState 
+    def run 
+
+        say("будтье обрежни зараз йде мобилизация ")
+
+        
+        suggest_it("Ви вийшли в мисто 🌆") 
+            .option("Назад додму") do 
+                switch_state MainMenuState.new 
+            end
+            .option("Hz") do 
+                switch_state MainMenuState.new 
+
+            end
+            .exec 
+
+    end
+
 end
+
 
 class MainMenuState < BaseState 
     def run 
-        suggest_it("Ваш москаль лежить дома")
+        suggest_it("Ваш москаль лежить дома 🏘")
             .option("Показати статистку") do 
-            
+                switch_satte StatsShowingState.new() 
             end
-            .option("Заробити грошей") do 
-            
+            .option("Покормити москаля") do 
+                say "Ви покормили москаля (( \n нащо їжу на таке переводити..."
             end
-            .option("Прогулятись") do 
-                
+            .option("Вийти на вулицю") do 
+                switch_state WalkingInTownState.new
             end
             .option("Померти") do 
                 switch_state SuicideState.new 

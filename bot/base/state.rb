@@ -33,6 +33,10 @@ class BaseState
     
     attr_accessor :executor
     
+
+    def run_sometimes(&block) 
+    end
+
     #print message to user
     def say(text, **data)
         executor.say(text, **data)

@@ -2,7 +2,7 @@ require_from(__dir__ + '/actions/*')
 
 
 
-
+#TODO implement action recording and action-based state restoring 
 
 class ValidatedTextExpectorAction < BaseAction 
 

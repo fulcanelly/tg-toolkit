@@ -34,8 +34,6 @@ class BaseState
     attr_accessor :executor
     
 
-    def run_sometimes(&block) 
-    end
 
     #print message to user
     def say(text, **data)
@@ -86,8 +84,8 @@ class BaseState
 
     #makes code run not always witch some chance 
     #it can't be recorded / restored
-
-    def run_somtimes(&block)
+    #TODO make rand action(to make it restorable)
+    def run_sometimes(&block)
         if rand > 0.5 then 
             block.call 
         end

@@ -81,16 +81,15 @@ end
 class WalkingInTownState < BaseState 
     def run 
 
-        say("будтье обрежни зараз йде мобилизация ")
+        say("Будьте обрежні зараз йде мобілізація ")
 
         
-        suggest_it("Ви вийшли в мисто 🌆") 
-            .option("Назад додму") do 
+        suggest_it("Ви вийшли в місто 🌆") 
+            .option("Назад додму 🏘") do 
                 switch_state MainMenuState.new 
             end
             .option("Hz") do 
                 switch_state MainMenuState.new 
-
             end
             .exec 
 
@@ -102,13 +101,13 @@ end
 class MainMenuState < BaseState 
     def run 
         suggest_it("Ваш москаль лежить дома 🏘")
-            .option("Показати статистку") do 
-                switch_satte StatsShowingState.new() 
+            .option("Показати мого москаля") do 
+                switch_state StatsShowingState.new() 
             end
             .option("Покормити москаля") do 
-                say "Ви покормили москаля (( \n нащо їжу на таке переводити..."
+                say "Ви покормили москаля 🍽 \n\nНащо їжу на таке переводити..."
             end
-            .option("Вийти на вулицю") do 
+            .option("Вийти на вулицю 🌆") do 
                 switch_state WalkingInTownState.new
             end
             .option("Померти") do 

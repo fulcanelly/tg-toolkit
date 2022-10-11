@@ -83,6 +83,16 @@ class BaseState
     end
 
 
+
+    #makes code run not always witch some chance 
+    #it can't be recorded / restored
+
+    def run_somtimes(&block)
+        if rand > 0.5 then 
+            block.call 
+        end
+    end
+
     # is used to run when state started 
     #can't end with nil (undefined behaviour)
     def run 

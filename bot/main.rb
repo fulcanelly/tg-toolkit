@@ -26,9 +26,9 @@ require_from("./model/*")
 require_from("./states/*")
 require_from("./core/*")
 require_from("./lib/*")
+require_relative './config'
 
-
-
+pp Config
 
 class TgExtra < Struct.new(:bot, :user_id, :mailbox)
 end
@@ -49,6 +49,10 @@ class ContextProvider
     end
 
     def _obtain_state(user_id)
+        unless Config.resotre_state then 
+            return StartingState.new
+        end
+
         state = State.find_by(user_id:) 
         
         return StartingState.new unless state 

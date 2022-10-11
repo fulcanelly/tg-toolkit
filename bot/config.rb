@@ -1,6 +1,9 @@
 #TODO
 
+require 'ostruct'
 
-resotre_state = true
+Config = OpenStruct.new 
 
-record_actions = false
+Config.resotre_state = true
+
+Config.record_actions = false

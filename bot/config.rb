@@ -4,6 +4,6 @@ require 'ostruct'
 
 Config = OpenStruct.new 
 
-Config.resotre_state = true
+Config.resotre_state = false
 
 Config.record_actions = false

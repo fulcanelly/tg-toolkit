@@ -24,7 +24,7 @@ class RespawnState < BaseState
                 switch_state MainMenuState.new 
             end
             .option("Створити нового") do 
-                switch_state SuicideState.new
+                switch_state CharacterGenerationState.new
             end
             .exec()
     end
@@ -38,11 +38,13 @@ end
 class StatsShowingState < BaseState
     
     def run 
-        say(
-            "Карма вашого москаля #{3}\n" + 
-            "Вік вашого москаля: #{2}\n" +
-            "Ваш москаль помер  #{1}\n" 
-        )
+        say "В розробці"
+        # say(
+        #     "Вашого москаля зовуть  #{}"
+        #     "Карма вашого москаля #{3}\n" + 
+        #     "Вік вашого москаля: #{2}\n" +
+        #     "Ваш москаль помер  #{1}\n" 
+        # )
 
         switch_state MainMenuState.new 
     end

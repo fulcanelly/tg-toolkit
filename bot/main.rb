@@ -51,7 +51,9 @@ class ContextProvider
             return StartingState.new
         end
 
-        state = User.find_by(user_id:).state 
+        state = User.find_by(user_id:).try do
+                _1.state 
+            end
 
         return StartingState.new unless state 
         
@@ -60,12 +62,10 @@ class ContextProvider
         )
     end
 
-    def _update_state_for(user_id) 
+    def _update_state_for(user_id, target_state) 
         user = User.find_by(user_id:)
         
-        state_dump = Marshal.dump(
-            @target_state
-        )
+        state_dump = Marshal.dump(target_state)
 
         unless user.state then 
             user.state = State.new( 

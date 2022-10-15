@@ -20,6 +20,7 @@ token = ENV['TG_TOKEN']
 raise 'env variable TG_TOKEN required' unless token 
 raise 'env variable TG_TOKEN required' if token.empty?
 
+require_from("./game/*")
 
 require_from("./base/*")
 require_from("./model/*")

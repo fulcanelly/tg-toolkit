@@ -53,8 +53,8 @@ class ContextProvider
             return StartingState.new
         end
 
-        state = State.find_by(user_id:) 
-        
+        state = User.find_by(user_id:).state 
+        pp({state:})
         return StartingState.new unless state 
         
         return Marshal.load(

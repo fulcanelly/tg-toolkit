@@ -8,14 +8,21 @@ class TgSwitchStateAction < BaseAction
 
     def _store_state(user_id)
     #TODO(i mean move State actions to state manager and then move it to ctx)
+        user = User.find_by(user_id:)
+        
+        state_dump = Marshal.dump(
+            @target_state
+        )
 
-        State.where(user_id:).delete_all()
-        State.new(
-            user_id:, 
-            state_dump: Marshal.dump(
-                @target_state
-            ),
-        ).save() 
+        unless user.state then 
+            user.state = State.new( 
+                state_dump:
+            )
+        else 
+            user.state.state_dump = state_dump
+        end
+        user.save
+
     end
 
     def exec(ctx)

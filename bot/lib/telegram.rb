@@ -36,7 +36,6 @@ class Bot
         #TODO: *args --??? wtf...
         request = full_request(snake_to_camel(name.to_s), *args)
         res = self.make_request(@http, request)
-        pp res
         return res
     end
     
@@ -88,7 +87,6 @@ class Bot
             timeout: 0
         })      
 
-        pp result
         n_offset = result["result"]
             .map do 
                 _1["update_id"]

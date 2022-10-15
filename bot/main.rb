@@ -96,8 +96,6 @@ class ContextProvider
             mailbox: [],
             provider: self
         })
-
-        pp   ctx.extra 
         
         return ctx  
     end
@@ -141,6 +139,22 @@ class Application
         end
     end
 
+    def _update_user_from(from)
+        user_id = from.id 
+        name = from.first_name
+
+        user = User.find_by(user_id:) 
+
+        unless user then 
+            return User.new(user_id:, name: name).save
+        end
+
+        if name != user.name
+            user.name = name 
+            user.save
+            return 
+        end        
+    end
 
     def _on_message(msg)
         user_id = msg.from.id
@@ -148,11 +162,8 @@ class Application
         provider.find_by_user_id(user_id).tap do |ctx|
             ctx.extra.mailbox << msg.text 
         end
-    
-        unless User.find_by(user_id:) then 
-            User.new(user_id:).save
-        end
-    
+        
+        _update_user_from(msg.from)    
     end
 
     def setup_handlers() 

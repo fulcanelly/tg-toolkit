@@ -30,8 +30,6 @@ require_relative './config'
 
 pp Config
 
-class TgExtra < Struct.new(:bot, :user_id, :mailbox)
-end
 
 class ContextProvider 
 
@@ -48,13 +46,13 @@ class ContextProvider
         @_executor ||= TGExecutor.new 
     end
 
-    def _obtain_state(user_id)
+    def _get_state_for(user_id)
         unless Config.resotre_state then 
             return StartingState.new
         end
 
         state = User.find_by(user_id:).state 
-        pp({state:})
+
         return StartingState.new unless state 
         
         return Marshal.load(
@@ -62,9 +60,27 @@ class ContextProvider
         )
     end
 
+    def _update_state_for(user_id) 
+        user = User.find_by(user_id:)
+        
+        state_dump = Marshal.dump(
+            @target_state
+        )
+
+        unless user.state then 
+            user.state = State.new( 
+                state_dump:
+            )
+        else 
+            user.state.state_dump = state_dump
+        end
+        user.save
+    end
+
+
     def create_ctx(user_id) 
         #setting up state 
-        state = _obtain_state(user_id) #StartingState.new 
+        state = _get_state_for(user_id) #StartingState.new 
         state.executor = default_exec()
 
         #setting up fiber
@@ -74,7 +90,15 @@ class ContextProvider
 
         #setting up context 
         ctx = Context.new(fiber, state) 
-        ctx.extra = TgExtra.new(@bot, user_id, [])
+        ctx.extra = OpenStruct.new({
+            bot: @bot, 
+            user_id: user_id, 
+            mailbox: [],
+            provider: self
+        })
+
+        pp   ctx.extra 
+        
         return ctx  
     end
 

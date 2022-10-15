@@ -90,6 +90,11 @@ class BaseState
         end
     end
 
+    # returns database object representing it's user
+    def myself
+        executor.myself
+    end
+
     # is used to run when state started 
     #can't end with nil (undefined behaviour)
     def run 

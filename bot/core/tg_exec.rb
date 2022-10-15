@@ -46,5 +46,9 @@ class TGExecutor < BaseActionExecutor
         Fiber.yield ExpectEnumAction.new(options, on_wrong_message)
     end
 
+    def myself 
+        Fiber.yield GetMeAction.new
+    end
+
 
 end

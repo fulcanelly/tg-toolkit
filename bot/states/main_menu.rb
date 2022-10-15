@@ -1,6 +1,6 @@
 
 class MainMenuState < BaseState 
-    def run 
+    def run         
         suggest_it("Ваш москаль лежить дома 🏘")
             .option("Показати мого москаля") do 
                 switch_state StatsShowingState.new() 

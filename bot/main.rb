@@ -41,6 +41,9 @@ class ContextProvider
     def initialize(bot)
         @bot = bot
         @context_by_id = {}
+        @global_ctx = OpenStruct.new({
+            context_provider: self
+        }) 
     end
 
     def default_exec 
@@ -91,6 +94,7 @@ class ContextProvider
 
         #setting up context 
         ctx = Context.new(fiber, state) 
+        ctx.global = @global_ctx
         ctx.extra = OpenStruct.new({
             bot: @bot, 
             user_id: user_id, 

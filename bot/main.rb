@@ -31,8 +31,9 @@ require_relative './config'
 
 pp Config
 
-
+## TODO scheduler
 class ContextProvider 
+
 
     def get_all_ctx() 
         return @context_by_id.values
@@ -42,7 +43,8 @@ class ContextProvider
         @bot = bot
         @context_by_id = {}
         @global_ctx = OpenStruct.new({
-            context_provider: self
+            context_provider: self,
+            chattroom: ChatroomObject.new 
         }) 
     end
 
@@ -80,7 +82,6 @@ class ContextProvider
         end
         user.save
     end
-
 
     def create_ctx(user_id) 
         #setting up state 

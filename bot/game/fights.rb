@@ -20,7 +20,7 @@ end
 
 
 BODY_PARTS_NAIVE = [
-    :head, :chest, :stomach, :hit_chance 
+    :head, :chest, :stomach, :legs 
 ]
 
 class MockPlayer < Player 

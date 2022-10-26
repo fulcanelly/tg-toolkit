@@ -6,6 +6,8 @@ class CharacterGenerationState < BaseState
     end
 
     def _gen_occupation()
+        #TODO: make occupation  and location generators and then select from database
+
         [
             :student,
             :military,
@@ -22,11 +24,24 @@ class CharacterGenerationState < BaseState
         ].sample
     end
 
-
+    def create_one(name, sex, age) 
+        is_man = if (sex == "Чоловіча") then true else false end
+    
+        myself.character.destroy
+        myself.character = Character.new(
+            name:,
+            is_man?: is_man,
+            age:,
+            
+            deaths: 0, 
+            karma: -1 
+        )
+        myself.save
+    end
+    
     def run() 
-
         say "Придумайте iм'я вашому москалю"
-        name = expect_text 
+        name = expect_text()
         
         sex = _suggest("Оберіть стать москаля", ["Чоловіча", "Жіноча"])
  
@@ -37,7 +52,9 @@ class CharacterGenerationState < BaseState
         occupation = _gen_occupation()
         location = _gen_location()
 
+        create_one(name, sex, age)
 
+        #TODO: it breaks vscode + need unified mocal print
         say(
             "Готово!\n\n" + 
             "Вашого москаля звати #{name}\n" +

@@ -85,7 +85,7 @@ class BaseState
     #it can't be recorded / restored
     #TODO make rand action(to make it restorable)
     def run_sometimes(&block)
-        if rand > 0.5 then 
+        if executor.random > 0.5 then 
             block.call 
         end
     end

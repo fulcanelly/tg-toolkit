@@ -18,7 +18,8 @@ class RecordedExecutor
         actions.create(
             data: Marshal.dump({
                 name => result
-            })
+            }),
+            name:
         )
     end
 
@@ -37,7 +38,7 @@ end
 class RestorerExecutor < Struct.new(:data)
    
     def method_missing(name, *args, **wargs, &block)
-        entry = Marshal.load(data.pop.data)
+        entry = Marshal.load(data.shift.data)
         Fiber.yield(:fail) if entry.keys.first != name
         Fiber.yield(:done) if data.empty?
         return entry.values.first
@@ -60,13 +61,17 @@ class StateRestorer < Struct.new(:state, :user_id)
         end
     end
 
+    def __destroy_actions() 
+        User.find_by(user_id:)
+            .actions
+            .destroy_all()
+    end
+
     def __try(fib) 
         begin 
             fib.resume
-        rescue => e 
-            User.find_by(user_id:)
-                .actions.destroy_all()
-            puts e  
+        rescue => e     
+            __destroy_actions()
             #TODO add 4fallback state
             default_fiber
         end
@@ -75,6 +80,7 @@ class StateRestorer < Struct.new(:state, :user_id)
     def try_restore 
         actions = load_actions()
         return default_fiber if actions.empty?
+
         self.state.executor = RestorerExecutor.new(actions) 
 
         result = default_fiber
@@ -82,6 +88,7 @@ class StateRestorer < Struct.new(:state, :user_id)
         when :done 
             result
         else    
+            __destroy_actions()
             default_fiber
         end
     end

@@ -53,7 +53,7 @@ class ContextProvider
     end
 
     def _get_state_for(user_id)
-        unless Config.resotre_state then 
+        unless Config.restore_state then 
             return StartingState.new
         end
 

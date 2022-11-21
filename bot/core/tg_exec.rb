@@ -2,30 +2,11 @@ require_from(__dir__ + '/actions/*')
 
 
 
-#TODO implement action recording and action-based state restoring 
 
-class ValidatedTextExpectorAction < BaseAction 
-
-    ## validator :: MessageText -> Bool
-    def initialize(validator)
-
-    end
-
-    # is_blocking? :: IORef Ctx -> IO Bool
-    def is_blocking?(ctx)
-
-    end
-
-    # exec :: IORef Ctx -> IO ()
-    def exec(ctx)
-
-    end
-
-end
 
 
 class TGExecutor < BaseActionExecutor
-
+ 
     def expect_text
         Fiber.yield TgTextExpectorAction.new 
     end

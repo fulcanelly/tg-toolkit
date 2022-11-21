@@ -86,7 +86,6 @@ class ContextProvider
     def create_ctx(user_id) 
         #setting up state 
         state = _get_state_for(user_id) #StartingState.new 
-        state.executor = default_exec()
 
         #setting up fiber
         fiber = Fiber.new do 
@@ -95,6 +94,11 @@ class ContextProvider
 
         #setting up context 
         ctx = Context.new(fiber, state) 
+        
+        #setting up executor 
+        state.executor = RecordedExecutor.new(
+            default_exec(), ctx)
+
         ctx.global = @global_ctx
         ctx.extra = OpenStruct.new({
             bot: @bot, 

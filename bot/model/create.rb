@@ -22,6 +22,12 @@ class CreateAll < ActiveRecord::Migration[7.0]
             t.timestamps
         end
     
+        # recorded action of state 
+        create_table :actions, if_not_exists: true do |t|
+            t.references :user, foreign_key: { to_table: :users }
+            t.binary :data
+            t.timestamps
+        end
 
         # where player currently lives 
         create_table :locations, if_not_exists: true do |t|

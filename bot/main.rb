@@ -83,14 +83,22 @@ class ContextProvider
         user.save
     end
 
+    def obtain_fiber(state, user_id)
+        if Config.restore_actions then 
+            StateRestorer.new(state, user_id).try_restore
+        else 
+            Fiber.new do 
+                state.run
+            end
+        end
+    end
+
     def create_ctx(user_id) 
         #setting up state 
         state = _get_state_for(user_id) #StartingState.new 
 
         #setting up fiber
-        fiber = Fiber.new do 
-            state.run
-        end
+        fiber = obtain_fiber(state, user_id)
 
         #setting up context 
         ctx = Context.new(fiber, state) 

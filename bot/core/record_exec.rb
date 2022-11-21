@@ -5,7 +5,6 @@ class RecordedExecutor
     
     attr_accessor :inner_executor, :ctx
 
-    
     def initialize(inner_executor, ctx) 
         self.inner_executor = inner_executor
         self.ctx = ctx
@@ -33,6 +32,60 @@ class RecordedExecutor
 
     end
    
+end
+
+class RestorerExecutor < Struct.new(:data)
+   
+    def method_missing(name, *args, **wargs, &block)
+        entry = Marshal.load(data.pop.data)
+        Fiber.yield(:fail) if entry.keys.first != name
+        Fiber.yield(:done) if data.empty?
+        return entry.values.first
+    end
+
+end
+
+class StateRestorer < Struct.new(:state, :user_id)
+
+    def load_actions 
+        User.find_by(user_id:)
+            .actions
+            .order(id: :asc)
+            .to_a
+    end
+
+    def default_fiber
+        Fiber.new do 
+            self.state.run 
+        end
+    end
+
+    def __try(fib) 
+        begin 
+            fib.resume
+        rescue => e 
+            User.find_by(user_id:)
+                .actions.destroy_all()
+            puts e  
+            #TODO add 4fallback state
+            default_fiber
+        end
+    end
+
+    def try_restore 
+        actions = load_actions()
+        return default_fiber if actions.empty?
+        self.state.executor = RestorerExecutor.new(actions) 
+
+        result = default_fiber
+        case __try(result)
+        when :done 
+            result
+        else    
+            default_fiber
+        end
+    end
+
 
 end
 

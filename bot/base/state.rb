@@ -80,6 +80,10 @@ class BaseState
     end
 
 
+    # used to wrap code that not need to run when state is restoring 
+    def escape(&block) 
+        executor.escape(&block)
+    end
 
     #makes code run not always witch some chance 
     #it can't be recorded / restored

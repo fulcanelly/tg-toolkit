@@ -11,6 +11,18 @@ class RandAction < BaseAction
 
 end
 
+class EscapeAction < BaseAction
+    attr_accessor :block
+    
+    def initialize(block)
+        self.block = block
+    end
+
+    def exec(ctx)
+        self.block.call(ctx)
+    end    
+end
+
 class BaseActionExecutor 
 
     def expect_text
@@ -23,6 +35,10 @@ class BaseActionExecutor
 
     def random
         Fiber.yield RandAction.new 
+    end
+
+    def escape(&block)
+        Fiber.yield EscapeAction.new(block)
     end
     
 end

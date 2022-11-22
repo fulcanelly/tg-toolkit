@@ -1,6 +1,4 @@
 
-require 'active_record'
-
 throw 'required PG_PASS env var' unless ENV['PG_PASS'] or ENV['PG_PASS'].empty?
 
 ActiveRecord::Base.establish_connection(

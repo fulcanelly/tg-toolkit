@@ -1,8 +1,3 @@
-require_from(__dir__ + '/actions/*')
-
-
-
-
 
 
 class TGExecutor < BaseActionExecutor

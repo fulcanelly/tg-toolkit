@@ -1,6 +1,4 @@
 
-require 'colored'
-
 MAX_RUN = 10
 
 

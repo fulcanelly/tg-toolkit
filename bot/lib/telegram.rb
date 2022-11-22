@@ -1,9 +1,4 @@
-require 'net/http'
-require 'json'
-require 'cgi'
-require 'open-uri'
 
-require 'recursive-open-struct'
 
 #Net::HTTP.get(uri) # => String
 

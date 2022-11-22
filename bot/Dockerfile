@@ -3,6 +3,8 @@ FROM ruby:3.1.2-alpine
 RUN apk update && apk add --no-cache build-base
 RUN apk add postgresql-dev
 
+WORKDIR /app 
+
 COPY Gemfile Gemfile
 
 RUN bundle install

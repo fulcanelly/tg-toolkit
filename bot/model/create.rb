@@ -1,5 +1,3 @@
-require_relative './connect'
-
 
 class CreateAll < ActiveRecord::Migration[7.0]
     def change 

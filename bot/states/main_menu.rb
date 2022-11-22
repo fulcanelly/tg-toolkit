@@ -1,7 +1,12 @@
 
 class MainMenuState < BaseState 
+
+    def moscal_in_home_text 
+        "Ваш москаль лежить дома 🏘"
+    end
+
     def run         
-        suggest_it("Ваш москаль лежить дома 🏘")
+        suggest_it(self.moscal_in_home_text)
             .option("Показати мого москаля") do 
                 switch_state StatsShowingState.new() 
             end

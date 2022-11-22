@@ -28,6 +28,8 @@ class SuggesterBuilder
 end
 
 
+#TODO: remove executor from here
+
 #state reperesents an certain state of user with server interaction
 class BaseState 
     
@@ -47,7 +49,6 @@ class BaseState
     def expect_validated_text
         throw 'no implementation ' 
     end
-
 
     #switches state 
     def switch_state(state) 
@@ -87,7 +88,6 @@ class BaseState
 
     #makes code run not always witch some chance 
     #it can't be recorded / restored
-    #TODO make rand action(to make it restorable)
     def run_sometimes(&block)
         if executor.random > 0.5 then 
             block.call 
@@ -104,4 +104,5 @@ class BaseState
     def run 
         throw 'base state'
     end
+    
 end

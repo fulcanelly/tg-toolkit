@@ -2,10 +2,6 @@
 
 class WalkingInTownState < BaseState 
     def run 
-        # run_sometimes do 
-        #     switch_state FightState.new(self)
-        # end
-
         run_sometimes do 
             say("Будьте обрежні зараз йде мобілізація 🪖")
         end
@@ -16,6 +12,9 @@ class WalkingInTownState < BaseState
             end
             .option("Сховатись в кущах 🌴") do 
                 say "В розробці"
+            end
+            .option("Битва з ботом") do 
+                switch_state BotFightState.new(__clean_state(self))
             end
             .option("Піти в магазин 🛒") do 
                 say "В розробці"

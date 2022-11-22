@@ -20,16 +20,22 @@ raise 'env variable TG_TOKEN required' if token.empty?
 pp Config
 
 
-bot = Bot.new(token)
-pipe = EventPipe.new 
-provider = ContextProvider.new(bot)
+HotReloader.new(list_all_rb_files()).tap do |reloader|
+    reloader.init
+    reloader.entry_point do 
 
-bot.connect
+        bot = Bot.new(token)
+        pipe = EventPipe.new 
+        provider = ContextProvider.new(bot)
 
-Application.new(bot, pipe, provider)
-    .tap do |app|
-        app.setup_handlers()
-      #  app.run_ctxes()
-        app.run()
+        bot.connect
+
+        Application.new(bot, pipe, provider)
+            .tap do |app|
+                app.setup_handlers()
+            #   app.run_ctxes()
+                app.run()
+            end
     end
-
+    reloader.start
+end

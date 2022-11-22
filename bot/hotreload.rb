@@ -39,13 +39,19 @@ class HotReloader
 
     attr_accessor :files_to_watch, :last_update_by_filenames, :start_block
 
-    def initialize(files_to_watch)
-        @files_to_watch = files_to_watch
+    def initialize(_files_to_watch)
+        if _files_to_watch.is_a? Array then 
+            self.files_to_watch = _files_to_watch
+        else 
+            define_singleton_method(:files_to_watch) do 
+                _files_to_watch.call()
+            end
+        end
         @last_update_by_filenames = {}
     end
 
     def init
-        @files_to_watch.each do |path|
+        self.files_to_watch.each do |path|
             @last_update_by_filenames[path] = File.mtime(path)
         end
     end
@@ -78,7 +84,7 @@ class HotReloader
         end
 
         changed_files = []
-        files_to_watch.each do |path|
+        self.files_to_watch.each do |path|
 
             probably_new_time = File.mtime(path)
 

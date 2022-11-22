@@ -10,6 +10,7 @@ require 'colored'
 
 require_relative './autoload'
 
+
 Autoloader.new.load
 
 token = ENV['TG_TOKEN']
@@ -19,8 +20,11 @@ raise 'env variable TG_TOKEN required' if token.empty?
 
 pp Config
 
+file_lister = proc do 
+    list_all_rb_files() 
+end
 
-HotReloader.new(list_all_rb_files()).tap do |reloader|
+HotReloader.new(file_lister).tap do |reloader|
     reloader.init
     reloader.entry_point do 
 

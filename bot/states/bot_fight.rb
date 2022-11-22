@@ -19,7 +19,7 @@ class MyFight
     def attack(part)
     end
 
-    def try_run_away 
+    def run_away 
     end
 
     def defend(part)
@@ -35,26 +35,24 @@ class MyFight
 
 end
 
-class JoinBotFightAction < BaseAction
-    
-    def exec(ctx)
-        #ctx.extra.
-        TgSayAction.new("")   
-    end
-    
-    def is_blocking?(ctx)
+class String
+    def multitrim 
+        self.split("\n")
+            .map do
+                _1.strip 
+            end
+            .join("\n")
     end
 
 end
 
+
+
+
 class BotFightState < BaseState
+    
     def initialize(next_state)
         @next_state = next_state
-    end
-
-
-    def find_oponent 
-        
     end
 
     def how_attack
@@ -121,7 +119,7 @@ class BotFightState < BaseState
             "#{attack.defending.name} у #{
                 form_body_part(attack.target)
             } " +
-            " наніс шкоду у #{attack.damage} хп "
+            "наніс шкоду у #{attack.damage} хп "
         end
     end
 
@@ -130,66 +128,72 @@ class BotFightState < BaseState
     end
 
 
-    def do_fight 
-    end
+    attr_accessor :fight, :me, :against, :counter
 
-    def alter_run 
-        say "Шукаю опонента..."
-        fight = find_oponent()
- #           .on_gey() do 132132
-#            end
-    end
-
-    def try_run_away 
-
+    def run_away 
+        @done = true
         say "Ви успiшно втекли"
+        
+    end
+
+    def send_summary(round_result, number)
+        attack_str = round_result
+            .map do form_attack _1 end
+            .join("\n\n")
+
+        say("⚔️ Хід завершений! (#{number})
+
+            #{attack_str} 
+
+            #{format_player(me)}
+            #{format_player(against)}"
+                .multitrim
+        )
     end
 
 
-    #TODO leave fight 
+    def process_round 
+        self.counter += 1
+
+        #deside how to attack
+        attack = how_attack()
+        
+        return run_away() unless attack 
+        fight.feed_attack(me, attack)
+
+        #deside how to deffend
+        deffend = how_deffend()
+
+        return run_away() unless deffend 
+        fight.feed_defense(me, deffend)
+
+        #bot turn 
+        fight.feed_attack(against, BODY_PARTS_NAIVE.sample) 
+        fight.feed_defense(against, BODY_PARTS_NAIVE.sample) 
+
+        #getting result
+        round_result = fight.process()
+        send_summary(round_result, counter)
+        
+    end
+
+    def fight_done? 
+        fight.done? or @done 
+    end
+
     def run 
         say "На вас напав гей ⚔️"
 
-        me = Player.new("me", 100)
-        #TODO find_oponent 
-        mock = MockPlayer.new() 
+        self.me = Player.new("me", 100)
+        self.against = MockPlayer.new() 
+        self.fight = Fight.new(me, against)
+        self.counter = 0
 
-        fight = Fight.new(me, mock)
-
-        until fight.done? 
-            attack = how_attack()
-            unless attack 
-                break try_run_away()
-            end
-
-            fight.feed_attack(me, attack)
-
-            deffend = how_deffend()
-            unless attack 
-                break try_run_away()
-            end
-
-            fight.feed_attack(me, deffend)
-
-            #TODO should be kind of async
-            # smth like get_round_results() 
-
-            fight.feed_attack(mock, BODY_PARTS_NAIVE.sample) 
-            fight.feed_defense(mock, BODY_PARTS_NAIVE.sample) 
-
-            
-            attack_str = fight.process()
-                .map do form_attack _1 end
-                .join("\n\n")
-
-            say("#{attack_str} " +
-                "\n\n" + 
-                "#{format_player(me)}\n" +
-                "#{format_player(mock)}\n"
-            )
-            
+        until fight_done? 
+            process_round()
         end
 
+        #TODO
         say "Хм"
 
         switch_state @next_state
@@ -205,3 +209,4 @@ class RealFight < BaseState
     end
 
 end
+

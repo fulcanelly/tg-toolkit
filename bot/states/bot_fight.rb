@@ -159,8 +159,8 @@ class BotFightState < BaseState
         fight.feed_defense(me, deffend)
 
         #bot turn 
-        fight.feed_attack(against, BODY_PARTS_NAIVE.sample) 
-        fight.feed_defense(against, BODY_PARTS_NAIVE.sample) 
+        fight.feed_attack(against, escape do BODY_PARTS_NAIVE.sample end) 
+        fight.feed_defense(against, escape do BODY_PARTS_NAIVE.sample end) 
 
         #getting result
         round_result = fight.process()

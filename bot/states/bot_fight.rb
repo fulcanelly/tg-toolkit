@@ -1,44 +1,246 @@
-class BotFightHandler 
-    def initialize()
+
+module BotFights
+
+    BODY_PARTS = [
+        :head, :chest, :stomach, :legs 
+    ]
+
+    HP_EMOJI = "❤️"
+
+    class Attack
+        attr_accessor :person, :another, :protected_part, :body_part_target, :damage
+
+        def initialize(person, another, protected_part, body_part_target)
+            @person = person
+            @another = another
+            @protected_part = protected_part
+            @body_part_target = body_part_target
+        end
+
+        def my_turn? 
+            person.is_me?
+        end
+
+        def successful? 
+            return !! self.damage
+        end
+
+        def __format_body_part 
+            case body_part_target
+            when :head
+                "у глолву"
+            when :chest
+                "у груди"
+            when :stomach
+                "в живіт"
+            when :legs 
+                "в ноги"
+            end
+        end
+
+        def __format_my_turn 
+            if successful?() then
+                "💥 Вас вдарили #{__format_body_part} та нанесли шкоду у #{damage} хп "
+            else
+                "#{another.who} намагався вдарити вас #{__format_body_part} але удар було блоковано"
+            end
+        end
+
+        def __format_bot_turn 
+            if successful?() then
+                "💥 Ви вдарили #{person.to_who} #{__format_body_part} та нанесли шкоду у #{damage} хп"
+            else
+                "Ви намагалися завдати удару #{person.to_who} #{__format_body_part} але його було блоковано"
+            end
+        end
+
+        def format 
+            if my_turn?() then 
+                __format_my_turn
+            else 
+                __format_bot_turn
+            end
+        end
+
+        def process
+            self.person.protect(protected_part)
+            self.damage = self.person.hit(body_part_target)
+            self.person.reset()
+        end
+
+
     end
 
-    def join(person)
+    class BotFightRound 
+
+        attr_accessor :number, :one, :another
+        attr_accessor :attack_results 
+
+        def initialize(number, one, another)
+            self.number = number
+            self.one = one 
+            self.another = another
+        end
+
+        def process()
+            one.process
+            another.process
+
+            self.attack_results = [one, another]
+
+        end
+
+        def format() 
+            attacks_str = attack_results
+                .map do 
+                    _1.format 
+                end
+                .join("\n\n")
+                
+            fighters = [one.person, another.person]
+                .map do 
+                    _1.format 
+                end
+                .join("\n")
+            
+            " ⚔️ Хід завершений! (#{number})
+            
+
+            #{attacks_str}
+
+
+            #{fighters}
+            ".multitrim()
+        end
+
     end
 
-end
+    class Fighter
 
-class MyFight 
+        attr_accessor :hp, :protecting
 
-    attr_accessor :person, :fight
+        def to_who 
+            throw 'todo'
+        end
 
-    def initialize(fight, person) 
-        self.fight = fight
-        self.person = person
+        def who 
+            throw 'todo'
+        end
+
+        #TODO: add fight parameters contatining max fight damage etc  
+        def initialize()
+            self.hp = 100
+        end
+
+        # protect :: self -> BodyPart -> IO ()
+        def protect(body_part) 
+            self.protecting = body_part
+        end
+
+        # hit :: self -> BodyPart -> IO (NilType | Number) 
+        def hit(body_part)
+            throw 'unknown body part' unless BODY_PARTS.include?(body_part)
+            return nil if self.protecting == body_part 
+            self.hp -= 25 
+            25 
+            #if 
+        end
+
+        # reset :: self -> IO ()
+        def reset() 
+            self.protecting = nil
+        end
+
+        # is_bot? :: self -> Bool
+        def is_me? 
+            false
+        end
+
+        def __format_hp 
+            "( #{hp} / 100 #{HP_EMOJI})" 
+        end
+
+        def format 
+            "#{who} #{__format_hp}"
+        end
     end
 
-    def attack(part)
+    class PoliceManFighter < Fighter 
+        def to_who 
+            "москальскому полісмену"
+        end
+
+        def who 
+            "москальский полісмен"
+        end
+
     end
 
-    def run_away 
+    class PlayerFighter < Fighter
+
+        def who 
+            "Ви"
+        end
+
+        def is_me?
+            true 
+        end
+
     end
 
-    def defend(part)
+    class BotFight  
+
+        attr_accessor :myself, :another, :run_away, :round_number
+
+        attr_accessor :attack, :defend
+
+        def initialize(myself, another) 
+            self.myself = myself
+            self.another = another
+            self.round_number = 0
+        end
+
+        def run_away
+            @run_away = true
+        end
+
+        def run_away?
+            @run_away
+        end
         
+        def attack(part)
+            @attack = part 
+        end
+
+        def defend(part)
+            @defend = part 
+        end
+
+        def process_round()
+            self.round_number += 1 
+
+            against_me = Attack.new(myself, another, @defend, BODY_PARTS.sample) 
+            against_bot = Attack.new(another, myself, BODY_PARTS.sample, @attack) 
+
+            BotFightRound.new(round_number, against_me, against_bot).tap do 
+                _1.process
+            end
+        end
+
+        def is_done?()
+            self.run_away? or (another.hp <= 0) or (myself.hp <= 0)   
+        end
+
     end
 
-    def process_round()
-    end
 
-    def is_done?()
 
+    def self.start_bot_fight()  
+        return BotFight.new(
+            PlayerFighter.new(), PoliceManFighter.new())
     end
 
 end
-
-
-
-
-
 
 class BotFightState < BaseState
     
@@ -47,7 +249,7 @@ class BotFightState < BaseState
     end
 
     def how_attack
-        suggest_it("Як його бити?")
+        suggest_it("Як його бити? 🤛")
             .option("В голову") do 
                 :head
             end
@@ -66,8 +268,8 @@ class BotFightState < BaseState
             .exec()
     end
 
-    def how_deffend 
-        suggest_it("Що захищати ?") 
+    def how_defend 
+        suggest_it("Що захищати ? 🛡") 
             .option("Голову") do 
                 :head
             end
@@ -86,40 +288,8 @@ class BotFightState < BaseState
             .exec()
     end
 
-    #TODO cereate bpdypart class and move there
 
-    def form_body_part(part)
-        mapping = {
-            head: "голову",
-            chest: "груди", 
-            stomach: "живіт",
-            legs: "ноги"
-        } 
-
-        return mapping[part] || '<<IDK>>'
-    end 
-
-    #TODO move to attack class
-    def form_attack(attack) 
-        if attack.success then 
-            "#{attack.attacking.name} намагався " +
-            "завдати удару #{attack.defending.name} у " +
-            "#{form_body_part(attack.target)} але удар був блокований"
-        else 
-            "#{attack.attacking.name} завдав удару " +
-            "#{attack.defending.name} у #{
-                form_body_part(attack.target)
-            } " +
-            "наніс шкоду у #{attack.damage} хп "
-        end
-    end
-
-    def format_player(player)
-        "#{player.name} (#{player.health} / 100)"  
-    end
-
-
-    attr_accessor :fight, :me, :against, :counter
+    attr_accessor :fight
 
     def run_away 
         @done = true
@@ -127,60 +297,30 @@ class BotFightState < BaseState
         
     end
 
-    def send_summary(round_result, number)
-        attack_str = round_result
-            .map do form_attack _1 end
-            .join("\n\n")
-
-        say("⚔️ Хід завершений! (#{number})
-
-            #{attack_str} 
-
-            #{format_player(me)}
-            #{format_player(against)}"
-                .multitrim
-        )
-    end
-
-
     def process_round 
-        self.counter += 1
-
-        #deside how to attack
         attack = how_attack()
-        
-        return run_away() unless attack 
-        fight.feed_attack(me, attack)
 
-        #deside how to deffend
-        deffend = how_deffend()
+        return fight.run_away() unless attack 
+        fight.attack(attack)
 
-        return run_away() unless deffend 
-        fight.feed_defense(me, deffend)
+        defend = how_defend()
 
-        #bot turn 
-        fight.feed_attack(against, escape do BODY_PARTS_NAIVE.sample end) 
-        fight.feed_defense(against, escape do BODY_PARTS_NAIVE.sample end) 
+        return fight.run_away() unless defend 
+        fight.defend(defend)
 
-        #getting result
-        round_result = fight.process()
-        send_summary(round_result, counter)
-        
+        say fight.process_round().format()
     end
 
     def fight_done? 
-        fight.done? or @done 
+        fight.is_done? or @done 
     end
 
     def run 
-        say "На вас напав гей ⚔️"
+        say "На вас напа в гей ⚔️"
 
-        self.me = Player.new("me", 100)
-        self.against = MockPlayer.new() 
-        self.fight = Fight.new(me, against)
-        self.counter = 0
+        self.fight = BotFights.start_bot_fight()
 
-        until fight_done? 
+        until fight.is_done?()
             process_round()
         end
 
@@ -188,15 +328,6 @@ class BotFightState < BaseState
         say "Хм"
 
         switch_state @next_state
-    end
-
-end
-
-
-class RealFight < BaseState
-    def run 
-        figter = find_fighter() 
-        
     end
 
 end

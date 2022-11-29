@@ -1,12 +1,17 @@
 
 
 class WalkingInTownState < BaseState 
+
+    def players_count() 
+        Character.count 
+    end
+
     def run 
         run_sometimes do 
             say("Будьте обрежні зараз йде мобілізація 🪖")
         end
 
-        suggest_it("Ви вийшли в місто 🌆") 
+        suggest_it("Ви вийшли в місто де зараз проживає #{players_count} москалів 🌆") 
             .option("Назад додму 🏘") do 
                 switch_state MainMenuState.new 
             end

@@ -94,6 +94,10 @@ class BaseState
         end
     end
 
+    def random 
+        executor.random
+    end
+
     # returns database object representing it's user
     def myself
         executor.myself

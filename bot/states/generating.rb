@@ -54,13 +54,7 @@ class CharacterGenerationState < BaseState
 
         create_one(name, sex, age)
 
-        #TODO: it breaks vscode + need unified mocal print
-        say(
-            "Готово!\n\n" + 
-            "Вашого москаля звати #{name}\n" +
-            "Йому #{age} років, (sex:#{sex}) \n\n" +
-            "Проживає в #{location}"
-        )
+        say("Готово!\n\n #{myself.character}")
 
         switch_state MainMenuState.new 
 

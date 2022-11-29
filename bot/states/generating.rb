@@ -54,7 +54,7 @@ class CharacterGenerationState < BaseState
 
         create_one(name, sex, age)
 
-        say("Готово!\n\n #{myself.character}")
+        say("Готово!\n\n #{myself.character.format}")
 
         switch_state MainMenuState.new 
 

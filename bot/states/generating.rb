@@ -27,7 +27,7 @@ class CharacterGenerationState < BaseState
     def create_one(name, sex, age) 
         is_man = if (sex == "Чоловіча") then true else false end
     
-        myself.character.destroy
+        myself.character.destroy if myself.character
         myself.character = Character.new(
             name:,
             is_man?: is_man,

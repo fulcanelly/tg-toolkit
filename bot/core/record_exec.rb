@@ -78,6 +78,11 @@ class StateRestorer < Struct.new(:state, :user_id)
     end
 
     def try_restore 
+        unless User.find_by(user_id:).actions then 
+            return default_fiber()
+        end
+
+
         actions = load_actions()
         return default_fiber if actions.empty?
 

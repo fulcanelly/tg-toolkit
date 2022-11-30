@@ -41,6 +41,8 @@ class Application
     end
 
     def _on_message(msg)
+        _update_user_from(msg.from)    
+
         user_id = msg.from.id
         
         provider.find_by_user_id(user_id).tap do |ctx|
@@ -50,7 +52,6 @@ class Application
         #TODO
      #   optional_pipe.emit()
         
-        _update_user_from(msg.from)    
     end
 
     def setup_handlers() 

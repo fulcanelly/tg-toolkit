@@ -18,8 +18,8 @@ class WalkingInTownState < BaseState
             .option("Сховатись в кущах 🌴") do 
                 say "В розробці"
             end
-            .option("Битва з ботом") do 
-                switch_state BotFightState.new(__clean_state(self))
+            .option("Познайомитися з поліцейским") do 
+                switch_state PoliceIncidentState.new(__clean_state(self))
             end
             .option("Піти в магазин 🛒") do 
                 say "В розробці"

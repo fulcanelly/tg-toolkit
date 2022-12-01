@@ -1,12 +1,5 @@
-# moscalbot
+# tg toolkit
 
 
-# [Bot datasheet](./bot/DATASHEET.md) 
+# How to use
 
-
-
-# todo
-
-* my moscal stats 
-* add achievements 
-* fights with other players 

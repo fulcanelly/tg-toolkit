@@ -28,39 +28,6 @@ class CreateAll < ActiveRecord::Migration[7.0]
             t.timestamps
         end
 
-        # where player currently lives 
-        create_table :locations, if_not_exists: true do |t|
-            t.string :name
-            t.string :type 
-            t.timestamps 
-        end
-
-        #what player do for living
-        create_table :occupations, if_not_exists: true do |t|
-            t.string :name 
-            t.string :type 
-            t.timestamps 
-        end
-
-        #character is all about player 
-
-        create_table :characters, if_not_exists: true do |t|
-            t.string :name
-            t.integer :age
-            t.integer :karma 
-            t.integer :deaths
-            t.boolean :is_man?
-
-            t.references :user, null: true, foreign_key: { to_table: :users }
-            t.references :occupation, null: true, foreign_key: { to_table: :occupations }
-            t.references :location, null: true, foreign_key: { to_table: :locations }
-
-            t.timestamps 
-
-
-        end 
-
-        
     end
 end
 

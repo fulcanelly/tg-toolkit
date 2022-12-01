@@ -194,6 +194,18 @@ module BotFights
 
         attr_accessor :attack, :defend
 
+        def result 
+            if (another.hp <= 0) or (myself.hp <= 0)    
+                { :both => true }
+            elsif another.hp <= 0 
+                { :bot_dead => true }
+            elsif myself.hp<= 0 
+                { :self_dead => true }
+            elsif run_away?
+                { :run_away => true }
+            end
+        end
+
         def initialize(myself, another) 
             self.myself = myself
             self.another = another
@@ -316,7 +328,7 @@ class BotFightState < BaseState
     end
 
     def run 
-        say "На вас напа в гей ⚔️"
+        say "Поліцейский напав на вас  ⚔️"
 
         self.fight = BotFights.start_bot_fight()
 
@@ -324,10 +336,28 @@ class BotFightState < BaseState
             process_round()
         end
 
-        #TODO
-        say "Хм"
+        case fight.result
+        in { both: } 
+            switch_state RespawnState.new
+        in { bot_dead: }
+            
+            # run_sometimes do 
+            #     say "У поліцейского випав зуб, ви взяли його на пам'ять"
+            # # TODO inventory 
+            # end
+            say "Ура, це перемога!"
+            switch_state @next_state
 
-        switch_state @next_state
+        in { self_dead: }
+            say "Ви померли в бою з полiцейским..."
+            switch_state RespawnState.new 
+        in { run_away: }
+            switch_state @next_state
+        else 
+            throw 'unknown fight result'
+        end
+
+
     end
 
 end

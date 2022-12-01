@@ -27,8 +27,8 @@ module FileLister
         result
     end
 
-    def self::list_all_rb_files
-        list_all_files.filter do |f|
+    def self::list_all_rb_files(folder = __dir__)
+        list_all_files(folder).filter do |f|
             f.end_with? ".rb"
         end
 
@@ -106,6 +106,12 @@ class Autoloader
 
         show_errors() unless to_load.empty?
     end
+
+    def load_from(folder)
+        self.all_files = FileLister::list_all_rb_files(folder) 
+        self.load()
+    end
+
 
 end
 

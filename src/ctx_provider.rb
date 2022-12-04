@@ -1,35 +1,42 @@
 
 ## TODO scheduler
+## TODO  what it does
+# it's needed for Application class, 
+# since each user have own context
 class ContextProvider 
 
-
-    def get_all_ctx() 
-        return @context_by_id.values
-    end
-
-    def initialize(bot)
-        @bot = bot
-        @context_by_id = {}
-        @global_ctx = OpenStruct.new({
+    attr_accessor :bot, :global_ctx, :context_by_id, :start_state
+    
+    def initialize(bot, start_state, global = {})
+        self.start_state = start_state
+        self.bot = bot
+        self.context_by_id = {}
+        self.global_ctx = OpenStruct.new({
             context_provider: self,
-            chattroom: ChatroomObject.new 
+            **global
         }) 
     end
 
+    # get list of all active contextes
+    def get_all_ctx() 
+        self.context_by_id.values
+    end
+
+    # get's default executor
     def default_exec 
         @_executor ||= TGExecutor.new 
     end
 
     def _get_state_for(user_id)
         unless Config.restore_state then 
-            return StartingState.new
+            return self.start_state.new
         end
 
         state = User.find_by(user_id:).try do
                 _1.state 
             end
 
-        return StartingState.new unless state 
+        return self.start_state.new unless state 
         
         return Marshal.load(
             state.state_dump
@@ -51,6 +58,7 @@ class ContextProvider
         user.save
     end
 
+    # creates fiber for State::run or restores it
     def obtain_fiber(state, user_id)
         if Config.restore_actions then 
             StateRestorer.new(state, user_id).try_restore
@@ -61,9 +69,10 @@ class ContextProvider
         end
     end
 
+    # creates ctx by user id
     def create_ctx(user_id) 
         #setting up state 
-        state = _get_state_for(user_id) #StartingState.new 
+        state = _get_state_for(user_id)  
 
         #setting up fiber
         fiber = obtain_fiber(state, user_id)
@@ -75,9 +84,9 @@ class ContextProvider
         state.executor = RecordedExecutor.new(
             default_exec(), ctx)
 
-        ctx.global = @global_ctx
+        ctx.global = self.global_ctx
         ctx.extra = OpenStruct.new({
-            bot: @bot, 
+            bot: self.bot, 
             user_id: user_id, 
             mailbox: [],
             provider: self
@@ -88,9 +97,9 @@ class ContextProvider
 
 
     def find_by_user_id(user_id) 
-        ctx = @context_by_id[user_id] || create_ctx(user_id)
+        ctx = self.context_by_id[user_id] || create_ctx(user_id)
         
-        @context_by_id[user_id] = ctx
+        self.context_by_id[user_id] = ctx
     end 
 
 

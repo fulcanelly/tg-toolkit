@@ -91,64 +91,23 @@ class Bot
         @offset = unless n_offset then @offset else n_offset + 1 end
         
         result["result"].each do |upd|
-        
-
-            if msg = upd["message"]  
-                pipe.emit(:message, msg)
             
-            elsif cbck = upd["callback_query"] 
+            pipe.emit(*extract_event(upd))
 
-                pipe.emit(:callback_query, cbck) 
-            end
         end
     
     end
 
-    def listen()
-        mapper = Snake2CamelCallMappper.new do |name, http, wargs|
-            make_request(http, full_request(name, wargs))
-        end
-
-        uri = URI"https://api.telegram.org/"
-        
-        Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
-            offset = 0 
-
-            bound_bot = HTTPBoundBot.new(mapper, http)
-
-            loop do 
-        
-
-                result = bound_bot.get_updates({
-                    offset: offset,
-                    #timeout: 60
-                })
-
-                n_offset = result["result"]
-                    .map do 
-                        _1["update_id"]
-                    end
-                    .max 
-
-                offset = unless n_offset then offset else n_offset + 1 end
-
-                result["result"].each do |upd|
-                    
-                    if msg = upd["message"] then 
-                        @on_message.call(bound_bot, msg)
-                    elsif cbck = upd["callback_query"]
-                        @on_callback_query.call(bound_bot, cbck) 
-                    end
-
-                end
- 
-           end
-        end
-
-
-    end
     private 
 
+    def extract_event(update)
+        = update.to_h()
+            .filter() do |key, value| key != :update_id end
+            .entries()
+            .map do |key, value|
+                [key, RecursiveOpenStruct.new(value, recurse_over_arrays: true)]
+            end
+            .first()
 
     def gen_request_str(method, args)
         method + "?" +

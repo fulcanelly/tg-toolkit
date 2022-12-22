@@ -18,9 +18,15 @@ class EventPipe
     end
 
     def emit(event, *data)
-        @listeners[event].(*data)
-    end
+        respolver = @listeners[event]
 
+        if respolver then 
+            respolver.(*data)
+        else 
+            logger.warn "Got unsubsribed event: #{event.to_s.red}"
+        end
+
+    end
 
 end
 

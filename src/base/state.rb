@@ -28,11 +28,17 @@ class SuggesterBuilder
 end
 
 
+module StateExtension 
+end
+
+
 #TODO: remove executor from here
 
 #state reperesents an certain state of user with server interaction
 class BaseState 
     
+    include StateExtension
+
     attr_accessor :executor
     
 

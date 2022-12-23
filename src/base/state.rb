@@ -41,6 +41,13 @@ class BaseState
         executor.say(text, **{kb:, **data})
     end
 
+    def capture_text_or_cancel(enter_phrase, cancel_phrase) 
+        say enter_phrase, kb: [cancel_phrase]
+        inp = expect_text
+        return if inp == cancel_phrase
+        return inp 
+    end
+
     #blocks until user enters something 
     def expect_text() 
         executor.expect_text()

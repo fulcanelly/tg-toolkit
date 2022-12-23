@@ -1,6 +1,6 @@
 #TODO better move to BaseAction
 
-
+#stores to database result of all executor methods 
 class RecordedExecutor 
     
     attr_accessor :inner_executor, :ctx

@@ -30,6 +30,7 @@ class Bot
     def method_missing(name, *args, **wargs)
         #TODO: *args --??? wtf...
         request = full_request(snake_to_camel(name.to_s), *args)
+        pp request if Config.log_requests
         res = self.make_request(@http, request)
         return res
     end

@@ -7,7 +7,7 @@ class ContextProvider
 
     attr_accessor :bot, :global_ctx, :context_by_id, :start_state
     
-    def initialize(bot, start_state, global = {})
+    def initialize(bot, start_state, global: {})
         self.start_state = start_state
         self.bot = bot
         self.context_by_id = {}

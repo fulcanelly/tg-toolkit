@@ -1,12 +1,12 @@
 
-class CreateAll < ActiveRecord::Migration[7.0]
+class CoreCreateAll < ActiveRecord::Migration[7.0]
     def change 
 
         #telegram user 
         create_table :users, if_not_exists: true do |t|
                     
             t.string :name
-            t.integer :user_id
+            t.bigint :user_id
             
             t.timestamps 
         end
@@ -28,8 +28,10 @@ class CreateAll < ActiveRecord::Migration[7.0]
             t.timestamps
         end
 
+        create_table :idk, if_not_exists: true do |t|
+
+        end if false
     end
 end
 
 
-CreateAll.new.change

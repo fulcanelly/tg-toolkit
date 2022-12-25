@@ -57,6 +57,7 @@ class Application
     def setup_handlers() 
 
         pipe.on_message do |msg|
+            next if msg&.chat&.type != 'private'
             _on_message(msg)
         end
         

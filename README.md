@@ -1,13 +1,34 @@
 # tg toolkit
 
 # Motivation 
+
+I made it to simplify creation of chat bots. 
+
+It was inspired by free monads. The main goal is make testing easier, and code more expressive.
+And actually persistance also become easier.
+
 todo
 
 # How to use
+ 
+```ruby
+class SumNumbersState < BaseState
+    def run 
+        say "Enter first number:"
+        first = expect_text()
+        say "Enter second number:"
+        second = expect_text()
+        say "Result is #{first.to_i + second.to_i}"
+        switch_state SumNumbersState.new()
+    end
+end
 
-todo 
+``` 
+
+todo
 
 # What it does
+
 
 todo
 

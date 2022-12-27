@@ -54,6 +54,10 @@ class BaseState
         return inp 
     end
 
+    def nostore 
+        yield
+    end
+
     #blocks until user enters something 
     def expect_text() 
         executor.expect_text()

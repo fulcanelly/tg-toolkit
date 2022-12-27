@@ -122,4 +122,9 @@ class BaseState
         throw 'base state'
     end
     
+    #edit text
+    def edit_text(msg, text, reply_markup)
+        executor.edit_text(msg, text, reply_markup)
+    end
+
 end

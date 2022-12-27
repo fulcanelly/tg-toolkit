@@ -20,10 +20,12 @@ todo
 
 # Config 
 
-You can override config after loading library
+You can override config after loading library:
 
+```ruby
+Config.restore_state = true
+Config.restore_actions = true
+```
 
-* Config.restore_state = true
-
-* Config.restore_actions = true
+All available config options can be found in file src/config.rb [src/config.rb](src/config.rb)
 

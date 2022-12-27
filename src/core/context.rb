@@ -34,7 +34,6 @@ class FiberCtxRunner
     
     def flat_run()
         loop do 
-            puts "MY ID IS #{hash}".red
             iterate()
             break unless @last_action.is_a? BaseAction
             break if is_blocking?
@@ -77,6 +76,10 @@ class Context
 
     def flat_run
        @runner.flat_run_limited()
+    end
+
+    def side_runner(fiber)
+        FiberCtxRunner.new(fiber, self)
     end
 
     def run_hook(hook_fiber)

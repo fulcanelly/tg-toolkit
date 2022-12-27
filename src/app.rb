@@ -48,10 +48,7 @@ class Application
         provider.find_by_user_id(user_id).tap do |ctx|
             ctx.extra.mailbox << msg.text 
         end
-        
-        #TODO
-     #   optional_pipe.emit()
-        
+
     end
 
     def setup_handlers() 
@@ -61,10 +58,6 @@ class Application
             _on_message(msg)
         end
         
-        pipe.on_callback_query do 
-            #TODO
-        end
-
     end
 
 

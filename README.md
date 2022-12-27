@@ -1,5 +1,7 @@
 # tg toolkit
 
+# Motivation 
+todo
 
 # How to use
 

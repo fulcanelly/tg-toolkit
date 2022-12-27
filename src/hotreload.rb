@@ -120,7 +120,7 @@ class HotReloader
 
     def iterate
         check_files()
-        sleep(1.5)
+        sleep(Config.hotreload_check_time)
     end
 
     def start_main_thread 

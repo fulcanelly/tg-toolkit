@@ -43,19 +43,14 @@ class ContextProvider
         )
     end
 
-    def _update_state_for(user_id, target_state) 
+    def _update_state_for(user_id, target_state)
         user = User.find_by(user_id:)
-        
+
         state_dump = Marshal.dump(target_state)
 
-        unless user.state then 
-            user.state = State.new( 
-                state_dump:
-            )
-        else 
-            user.state.state_dump = state_dump
-        end
-        user.save
+        user.state ||= State.new
+        user.state.state_dump = state_dump
+        user.state.save
     end
 
     # creates fiber for State::run or restores it

@@ -10,7 +10,7 @@ class ContextProvider
     def initialize(bot, start_state, global: {})
         self.start_state = start_state
         self.bot = bot
-        self.context_by_id = {}
+        self.context_by_id = ObjectSpace::WeakMap.new
         self.global_ctx = OpenStruct.new({
             context_provider: self,
             **global

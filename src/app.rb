@@ -51,11 +51,19 @@ class Application
 
     end
 
+    def _on_command(msg)
+    end
+
     def setup_handlers()
 
         pipe.on_message do |msg|
-            next if msg&.chat&.type != 'private'
-            _on_message(msg)
+            if msg&.text.start_with? '/'
+                _on_command(msg)
+            end
+
+            if msg&.chat&.type == 'private'
+                _on_message(msg)
+            end
         end
 
     end

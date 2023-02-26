@@ -1,5 +1,5 @@
 class BaseAction
-    
+
     def exec(ctx)
         throw "can't run base action"
     end
@@ -9,5 +9,5 @@ class BaseAction
     def is_blocking?(ctx)
         false
     end
-    
+
 end

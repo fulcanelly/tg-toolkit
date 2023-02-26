@@ -1,7 +1,6 @@
 
+class EventPipe
 
-class EventPipe 
-    
     def initialize
         @listeners = {}
     end
@@ -11,7 +10,7 @@ class EventPipe
 
         if name.start_with? "on_"
             @listeners[name.split("on_").last.to_sym] = block
-        else 
+        else
             super(name.to_sym, *args, **nargs, &block)
         end
 
@@ -20,9 +19,9 @@ class EventPipe
     def emit(event, *data)
         respolver = @listeners[event]
 
-        if respolver then 
+        if respolver then
             respolver.(*data)
-        else 
+        else
             logger.warn "Got unsubsribed event: #{event.to_s.red}"
         end
 

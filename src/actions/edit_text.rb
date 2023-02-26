@@ -9,7 +9,7 @@ class EditMessageText < BaseAction
 
     def exec(ctx)
         ctx.extra.bot.edit_message_text({
-            text: @text, 
+            text: @text,
             chat_id: ctx.extra.user_id,
             message_id: @message_id,
             reply_markup: @reply_markup

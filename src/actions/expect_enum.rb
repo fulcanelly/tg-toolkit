@@ -1,20 +1,20 @@
 
-class ExpectEnumAction < BaseAction 
+class ExpectEnumAction < BaseAction
 
     def initialize(options, when_wrong)
         @options = options
         @when_wrong = when_wrong
     end
-    
-    def is_blocking?(ctx) 
 
-        if ctx.extra.mailbox.empty? then 
-            return true 
+    def is_blocking?(ctx)
+
+        if ctx.extra.mailbox.empty? then
+            return true
         end
 
-        text = ctx.extra.mailbox.shift 
-        
-        if not @options.include?(text) then 
+        text = ctx.extra.mailbox.shift
+
+        if not @options.include?(text) then
             TgSayAction.new(
                 @when_wrong, kb: @options
             ).exec(ctx)
@@ -23,13 +23,11 @@ class ExpectEnumAction < BaseAction
 
         @selected = text
         return false
-        
+
     end
 
     def exec(ctx)
         return @selected
     end
-    
-    
-end
 
+end

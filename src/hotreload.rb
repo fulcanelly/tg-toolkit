@@ -1,17 +1,16 @@
 require 'colored'
 
 
-
 def list_all_files(folder = ".")
     result = []
     Dir.entries(folder)
-        .filter() do |path| 
+        .filter() do |path|
             (path != '.') and (path != '..')
         end
         .each do |path|
         File
         full_path = folder + "/" + path
-        if File.directory?(full_path) then 
+        if File.directory?(full_path) then
             result.push(
                 *list_all_files(full_path)
             )
@@ -35,15 +34,15 @@ end
 
 
 
-class HotReloader 
+class HotReloader
 
     attr_accessor :files_to_watch, :last_update_by_filenames, :start_block
 
     def initialize(_files_to_watch)
-        if _files_to_watch.is_a? Array then 
+        if _files_to_watch.is_a? Array then
             self.files_to_watch = _files_to_watch
-        else 
-            define_singleton_method(:files_to_watch) do 
+        else
+            define_singleton_method(:files_to_watch) do
                 _files_to_watch.call()
             end
         end
@@ -70,16 +69,16 @@ class HotReloader
         is_runing
     end
 
-    def check_files() 
+    def check_files()
 
-        
+
         logger.info "checking files and threads".green
 
-        main_thread = Thread.list.find do |thr| 
-            thr.name == "main thread" 
+        main_thread = Thread.list.find do |thr|
+            thr.name == "main thread"
         end
-        
-        unless main_thread then 
+
+        unless main_thread then
             start_main_thread
         end
 
@@ -92,17 +91,17 @@ class HotReloader
                 logger.info 'got change'.green
                 @last_update_by_filenames[path] = probably_new_time
                 changed_files << path
-                
-            end 
+
+            end
 
 
         end
 
-        unless changed_files.empty? then 
+        unless changed_files.empty? then
             logger.info "applying change".green
             apply_update(changed_files)
         end
-      
+
 
     end
 
@@ -123,19 +122,19 @@ class HotReloader
         sleep(Config.hotreload_check_time)
     end
 
-    def start_main_thread 
+    def start_main_thread
         logger.info "Starting main thread".red
-        Thread.new do 
+        Thread.new do
             Thread.current.name = "main thread"
             self.start_block.call()
         end
     end
 
-    def start_reloader_thread 
-        Thread.new do 
+    def start_reloader_thread
+        Thread.new do
             Thread.current.name = "Hot realoader"
 
-            loop do 
+            loop do
                 iterate()
             end
 

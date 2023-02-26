@@ -7,9 +7,8 @@ class User < ActiveRecord::Base
     accepts_nested_attributes_for :character, :state, :actions
 end
 
-
 class State < ActiveRecord::Base
-    belongs_to :user 
+    belongs_to :user
 end
 
 class Action < ActiveRecord::Base

@@ -2,7 +2,7 @@
 
 require 'ostruct'
 
-Config = OpenStruct.new 
+Config = OpenStruct.new
 
 Config.hotreload_check_time = 2 # second
 

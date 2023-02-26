@@ -1,26 +1,26 @@
 
 class CoreCreateAll < ActiveRecord::Migration[7.0]
-    def change 
+    def change
 
-        #telegram user 
+        #telegram user
         create_table :users, if_not_exists: true do |t|
-                    
+
             t.string :name
             t.bigint :user_id
-            
-            t.timestamps 
+
+            t.timestamps
         end
         
         #state of bot
         create_table :states, if_not_exists: true do |t|
-            t.binary :state_dump 
+            t.binary :state_dump
 
             t.references :user, null: true, foreign_key: { to_table: :users }
 
             t.timestamps
         end
-    
-        # recorded action of state 
+
+        # recorded action of state
         create_table :actions, if_not_exists: true do |t|
             t.references :user, foreign_key: { to_table: :users }
             t.string :name

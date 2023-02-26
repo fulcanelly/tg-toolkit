@@ -1,10 +1,8 @@
 
-
-
 class TgTextExpectorAction < BaseAction
 
     def exec(ctx)
-        ctx.extra.mailbox.shift 
+        ctx.extra.mailbox.shift
     end
 
     def is_blocking?(ctx)

@@ -1,6 +1,6 @@
-#TODO implement action recording and action-based state restoring 
+#TODO implement action recording and action-based state restoring
 
-class ValidatedTextExpectorAction < BaseAction 
+class ValidatedTextExpectorAction < BaseAction
 
     attr_accessor :validator
 

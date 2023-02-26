@@ -11,13 +11,13 @@ class SuggesterBuilder
         @wrong = wrong
         return self
     end
-    
+
     def option(title, &block)
         @options[title] = block
         return self
     end
 
-    def exec 
+    def exec
         buttons = @options.keys
 
         @state.say @title, kb: buttons
@@ -28,43 +28,43 @@ class SuggesterBuilder
 end
 
 
-module StateExtension 
+module StateExtension
 end
 
 
 #TODO: remove executor from here
 
 #state reperesents an certain state of user with server interaction
-class BaseState 
-    
+class BaseState
+
     include StateExtension
 
     attr_accessor :executor
-    
+
 
     #print message to user
     def say(text, kb: [], **data)
         executor.say(text, **{kb:, **data})
     end
 
-    def capture_text_or_cancel(enter_phrase, cancel_phrase) 
+    def capture_text_or_cancel(enter_phrase, cancel_phrase)
         say enter_phrase, kb: [cancel_phrase]
         inp = expect_text
         return if inp == cancel_phrase
-        return inp 
+        return inp
     end
 
-    #blocks until user enters something 
-    def expect_text() 
+    #blocks until user enters something
+    def expect_text()
         executor.expect_text()
     end
 
     def expect_validated_text
-        throw 'no implementation ' 
+        throw 'no implementation '
     end
 
-    #switches state 
-    def switch_state(state) 
+    #switches state
+    def switch_state(state)
         executor.switch_state(state)
     end
 
@@ -72,17 +72,15 @@ class BaseState
         executor.sleep(time)
     end
 
-    #called when state get's callback query 
+    #called when state get's callback query
     #(i.e. user taps inline kb)
-    def on_cb() 
+    def on_cb()
     end
 
-    
     def expect_enum(*args)
         executor.expect_enum(*args)
     end
-    
-    
+
     def _suggest(tittle, options)
         say tittle, kb: options
         selected = expect_enum(options, "Немає такого варіанту")
@@ -94,20 +92,20 @@ class BaseState
     end
 
 
-    # used to wrap code that not need to run when state is restoring 
-    def escape(&block) 
+    # used to wrap code that not need to run when state is restoring
+    def escape(&block)
         executor.escape(&block)
     end
 
-    #makes code run not always witch some chance 
+    #makes code run not always witch some chance
     #it can't be recorded / restored
     def run_sometimes(&block)
-        if executor.random > 0.5 then 
-            block.call 
+        if executor.random > 0.5 then
+            block.call
         end
     end
 
-    def random 
+    def random
         executor.random
     end
 
@@ -116,12 +114,12 @@ class BaseState
         executor.myself
     end
 
-    # is used to run when state started 
+    # is used to run when state started
     #can't end with nil (undefined behaviour)
-    def run 
+    def run
         throw 'base state'
     end
-    
+
     #edit text
     def edit_text(msg, text, reply_markup)
         executor.edit_text(msg, text, reply_markup)

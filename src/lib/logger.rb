@@ -3,6 +3,7 @@ $logger = Logger.new(STDOUT)
 $logger.level = Logger::DEBUG
 
 
-def logger 
+def logger
     $logger
 end
+

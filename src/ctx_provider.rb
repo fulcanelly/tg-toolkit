@@ -1,12 +1,12 @@
 
 ## TODO scheduler
 ## TODO  what it does
-# it's needed for Application class, 
+# it's needed for Application class,
 # since each user have own context
-class ContextProvider 
+class ContextProvider
 
     attr_accessor :bot, :global_ctx, :context_by_id, :start_state
-    
+
     def initialize(bot, start_state, global: {})
         self.start_state = start_state
         self.bot = bot
@@ -14,30 +14,30 @@ class ContextProvider
         self.global_ctx = OpenStruct.new({
             context_provider: self,
             **global
-        }) 
+        })
     end
 
     # get list of all active contextes
-    def get_all_ctx() 
+    def get_all_ctx()
         self.context_by_id.values
     end
 
     # get's default executor
-    def default_exec 
-        @_executor ||= TGExecutor.new 
+    def default_exec
+        @_executor ||= TGExecutor.new
     end
 
     def _get_state_for(user_id)
-        unless Config.restore_state then 
+        unless Config.restore_state then
             return self.start_state.new
         end
 
         state = User.find_by(user_id:).try do
-                _1.state 
+                _1.state
             end
 
-        return self.start_state.new unless state 
-        
+        return self.start_state.new unless state
+
         return Marshal.load(
             state.state_dump
         )
@@ -55,47 +55,47 @@ class ContextProvider
 
     # creates fiber for State::run or restores it
     def obtain_fiber(state, user_id)
-        if Config.restore_actions then 
+        if Config.restore_actions then
             StateRestorer.new(state, user_id).try_restore
-        else 
-            Fiber.new do 
+        else
+            Fiber.new do
                 state.run
             end
         end
     end
 
     # creates ctx by user id
-    def create_ctx(user_id) 
-        #setting up state 
-        state = _get_state_for(user_id)  
+    def create_ctx(user_id)
+        #setting up state
+        state = _get_state_for(user_id)
 
         #setting up fiber
         fiber = obtain_fiber(state, user_id)
 
-        #setting up context 
-        ctx = Context.new(fiber, state) 
-        
-        #setting up executor 
+        #setting up context
+        ctx = Context.new(fiber, state)
+
+        #setting up executor
         state.executor = RecordedExecutor.new(
             default_exec(), ctx)
 
         ctx.global = self.global_ctx
         ctx.extra = OpenStruct.new({
-            bot: self.bot, 
-            user_id: user_id, 
+            bot: self.bot,
+            user_id: user_id,
             mailbox: [],
             provider: self
         })
-        
-        return ctx  
+
+        return ctx
     end
 
 
-    def find_by_user_id(user_id) 
+    def find_by_user_id(user_id)
         ctx = self.context_by_id[user_id] || create_ctx(user_id)
-        
+
         self.context_by_id[user_id] = ctx
-    end 
+    end
 
 
 end

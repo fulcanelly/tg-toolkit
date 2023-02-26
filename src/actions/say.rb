@@ -5,17 +5,17 @@ def group_kb_by_size(kb)
 
     avg = kb.map(&:size)
             .then do |table|
-                (table.min + table.max) / 2.0 
-            end 
-    
+                (table.min + table.max) / 2.0
+            end
+
 
     kb.reduce([[]]) do |res, str|
-        res.tap do 
-            _1.last << str 
+        res.tap do
+            _1.last << str
 
             row_size = _1.last
                 .map(&:size).sum
-            _1 << [] if row_size >= avg 
+            _1 << [] if row_size >= avg
         end
     end
 
@@ -28,14 +28,13 @@ def str_arr_to_kb(arr)
             resize_keyboard: true
 #            input_field_placeholder: ""
         }
-    else 
+    else
         {
             remove_keyboard: true
         }
     end
 
 end
-
 
 #TODO
 
@@ -47,15 +46,15 @@ class TgSayAction < BaseAction
         @reply_markup = reply_markup
     end
 
-    def exec(ctx)   
+    def exec(ctx)
         #todo: redo in clean way
         kb = if @kb then str_arr_to_kb(@kb) else {} end
         reply_markup = if @reply_markup then @reply_markup else kb end
 
         ctx.extra.bot.send_message({
-            text: @text, 
+            text: @text,
             chat_id: ctx.extra.user_id,
-            reply_markup: 
+            reply_markup:
         })
     end
 

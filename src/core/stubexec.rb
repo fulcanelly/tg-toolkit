@@ -1,6 +1,6 @@
 
-class StubSwitchStateAction < BaseAction 
-    def initialize(target_state) 
+class StubSwitchStateAction < BaseAction
+    def initialize(target_state)
         @target_state = target_state
     end
 
@@ -8,7 +8,7 @@ class StubSwitchStateAction < BaseAction
         @target_state.executor = ctx.state.executor
 
         ctx.state = @target_state
-        ctx.fiber = Fiber.new do 
+        ctx.fiber = Fiber.new do
             ctx.state.run
         end
     end
@@ -18,18 +18,17 @@ end
 class StubTextEpectorAction < BaseAction
 
     def exec(ctx)
-        gets() 
-        #cxt.events.stuff.then do 
+        gets()
+        #cxt.events.stuff.then do
         #end
 
     end
 
-    def is_blocking? 
+    def is_blocking?
         true
     end
 
 end
-
 
 class StubSayAction < BaseAction
 
@@ -39,14 +38,14 @@ class StubSayAction < BaseAction
 
     def exec(ctx)
         puts @text
-        
+
     end
 
 end
 
 class StubExecutor < BaseActionExecutor
 
-    def self::instance 
+    def self::instance
         @_self||= self.new
     end
 

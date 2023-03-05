@@ -57,7 +57,7 @@ class Application
     def setup_handlers()
 
         pipe.on_message do |msg|
-            if msg&.text.start_with? '/'
+            if msg&.text&.start_with? '/'
                 _on_command(msg)
             end
 

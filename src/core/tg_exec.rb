@@ -12,7 +12,7 @@ class TGExecutor < BaseActionExecutor
         Fiber.yield(TgSwitchStateAction.new(state))
     end
 
-    def sleep(time)
+    def suspend(time)
        Fiber.yield(SleepAction.new(time))
     end
 

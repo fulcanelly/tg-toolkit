@@ -47,6 +47,10 @@ class BaseState
         executor.say(text, **{kb:, **data})
     end
 
+    def suspend(time)
+        executor.suspend(time)
+    end
+
     def capture_text_or_cancel(enter_phrase, cancel_phrase)
         say enter_phrase, kb: [cancel_phrase]
         inp = expect_text

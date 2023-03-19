@@ -46,6 +46,22 @@ class << KeyboardExtra
 end
 
 
+#todo: move to toolkit
+class InlineKeyboardHelper
+    def method_missing(name, *args, **vargs)
+        data = {
+            name:,
+            args:,
+            vargs:
+        }
+
+        dump = Marshal.dump(data)
+        found = InlineKeyboard.find_by(dump:)
+
+        if found then found else InlineKeyboard.create(dump:) end.id
+    end
+end
+
 class InlineKeyboardExtra < Extra
 
     attr_accessor :inline_keyboard
@@ -58,6 +74,13 @@ class InlineKeyboardExtra < Extra
         inline_keyboard << row
         return self
     end
+
+
+    def ikbhelper
+        #TODO
+        InlineKeyboardHelper.new
+    end
+
 
     def obtain
         return {
